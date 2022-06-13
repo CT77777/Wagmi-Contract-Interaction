@@ -21,7 +21,12 @@ function App() {
   });
   const { disconnect } = useDisconnect();
 
-  const { data: balanceOfMine } = useContractRead(
+  // 無法抓新地址的值, 只會抓建立合約地址的值
+  const {
+    data: balanceOfMine,
+    isbalanceError,
+    isbalanceLoading,
+  } = useContractRead(
     {
       addressOrName: contractAddress,
       contractInterface: contractABI,
@@ -30,7 +35,24 @@ function App() {
     { watch: true }
   );
 
-  const { data: totalSupply } = useContractRead(
+  // 可以抓新地址的balance
+  const { data: balanceOf } = useContractRead(
+    {
+      addressOrName: contractAddress,
+      contractInterface: contractABI,
+    },
+    "balanceOf",
+    {
+      args: [account?.address],
+      watch: true,
+    }
+  );
+
+  const {
+    data: totalSupply,
+    issupplyError,
+    issupplyLoading,
+  } = useContractRead(
     {
       addressOrName: contractAddress,
       contractInterface: contractABI,
@@ -62,8 +84,15 @@ function App() {
             <div>Wallet Address: {account.address}</div>
             <div>
               <button onClick={Mint}>Mint Your NFT</button>
-              {balanceOfMine && <div>Counts: {balanceOfMine.toString()}</div>}
-              {totalSupply && <div>Total Supply: {totalSupply.toString()}</div>}
+              {balanceOfMine && (
+                <div>Your token count: {balanceOfMine.toString()}</div>
+              )}
+              {balanceOf && (
+                <div>Exact token count: {balanceOf.toString()}</div>
+              )}
+              {totalSupply && (
+                <div>Total token supply: {totalSupply.toString()}</div>
+              )}
             </div>
             <button onClick={disconnect}>Disconnect</button>
           </div>

@@ -13,7 +13,7 @@ contract CTNFT is ERC721, ERC721Enumerable, Ownable {
 
     constructor() ERC721("CTNFT", "CTN") {}
 
-    function Mint() public onlyOwner {
+    function Mint() public {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(msg.sender, tokenId);
